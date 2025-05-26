@@ -9,12 +9,12 @@ import { suggestProjectDetailsAction } from '@/lib/actions/project.actions';
 import type { SuggestProjectDetailsOutput } from '@/ai/flows/suggest-project-details';
 import { useToast } from '@/hooks/use-toast';
 import { Spinner } from '@/components/shared/Spinner';
-import type { UseFormSetValue } from 'react-hook-form'; // Assuming react-hook-form for parent
+import type { UseFormSetValue } from 'react-hook-form'; 
 
 interface AIProjectAssistButtonProps {
   currentDescription: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setValue: UseFormSetValue<any>; // From react-hook-form
+  setValue: UseFormSetValue<any>; 
 }
 
 export function AIProjectAssistButton({ currentDescription, setValue }: AIProjectAssistButtonProps) {
@@ -24,8 +24,8 @@ export function AIProjectAssistButton({ currentDescription, setValue }: AIProjec
   const handleSuggestDetails = () => {
     if (!currentDescription || currentDescription.trim().length < 10) {
       toast({
-        title: 'Description Too Short',
-        description: 'Please provide a more detailed project description (at least 10 characters).',
+        title: 'Descripción Demasiado Corta',
+        description: 'Por favor, proporciona una descripción del proyecto más detallada (al menos 10 caracteres).',
         variant: 'destructive',
       });
       return;
@@ -39,14 +39,14 @@ export function AIProjectAssistButton({ currentDescription, setValue }: AIProjec
         setValue('publicObjective', publicObjective, { shouldValidate: true });
         setValue('scope', scope, { shouldValidate: true });
         toast({
-          title: 'AI Suggestions Applied',
-          description: 'Project type, public objective, and scope have been filled.',
+          title: 'Sugerencias de IA Aplicadas',
+          description: 'Se han completado el tipo de proyecto, el objetivo público y el alcance.',
           className: 'bg-accent text-accent-foreground',
         });
       } else {
         toast({
-          title: 'AI Suggestion Failed',
-          description: result.error,
+          title: 'Sugerencia de IA Fallida',
+          description: result.error, // El error ya está traducido desde la acción
           variant: 'destructive',
         });
       }
@@ -62,7 +62,7 @@ export function AIProjectAssistButton({ currentDescription, setValue }: AIProjec
       className="w-full sm:w-auto"
     >
       {isPending ? <Spinner size="sm" className="mr-2" /> : <Wand2 className="mr-2 h-4 w-4" />}
-      Suggest with AI
+      Sugerir con IA
     </Button>
   );
 }

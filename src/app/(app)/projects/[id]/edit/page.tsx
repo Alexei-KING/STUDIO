@@ -18,8 +18,8 @@ export default async function EditProjectPage({ params }: { params: { id: string
   return (
     <div>
       <PageHeader
-        title="Edit Project"
-        description={`Update details for project: ${project.projectName}`}
+        title="Editar Proyecto"
+        description={`Actualizar detalles del proyecto: ${project.projectName}`}
       />
       <ProjectForm project={project} formAction={updateProjectActionWithId} isEditMode />
     </div>

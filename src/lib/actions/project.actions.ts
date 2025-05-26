@@ -17,13 +17,15 @@ import type { SuggestProjectDetailsOutput } from '@/ai/flows/suggest-project-det
 import { PROJECT_STATUSES } from '../constants';
 
 const ProjectSchema = z.object({
-  projectName: z.string().min(3, 'Project name must be at least 3 characters'),
-  location: z.string().min(3, 'Location must be at least 3 characters'),
-  responsibleDepartment: z.string().min(3, 'Department must be at least 3 characters'),
-  contactInformation: z.string().min(5, 'Contact info must be at least 5 characters'), // Simple validation
-  tutors: z.string().min(3, 'Tutors field must be at least 3 characters'),
-  status: z.enum(PROJECT_STATUSES),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
+  projectName: z.string().min(3, 'El nombre del proyecto debe tener al menos 3 caracteres'),
+  location: z.string().min(3, 'La ubicación debe tener al menos 3 caracteres'),
+  responsibleDepartment: z.string().min(3, 'El departamento/carrera responsable debe tener al menos 3 caracteres'),
+  projectLead: z.string().min(5, 'El nombre del líder del proyecto (nombre y dos apellidos) debe tener al menos 5 caracteres.'),
+  academicTutor: z.string().min(5, 'El nombre del tutor académico (nombre y dos apellidos) debe tener al menos 5 caracteres.'),
+  communityTutor: z.string().min(5, 'El nombre del tutor comunitario (nombre y dos apellidos) debe tener al menos 5 caracteres.'),
+  contactInformation: z.string().email('Por favor, introduce un correo electrónico válido.').min(5, 'El correo electrónico de contacto debe tener al menos 5 caracteres'),
+  status: z.enum(PROJECT_STATUSES, { errorMap: () => ({ message: "Por favor, selecciona un estado válido."}) }),
+  description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres'),
   projectType: z.string().optional(),
   publicObjective: z.string().optional(),
   scope: z.string().optional(),
@@ -34,8 +36,10 @@ export type CreateProjectFormState = {
     projectName?: string[];
     location?: string[];
     responsibleDepartment?: string[];
+    projectLead?: string[];
+    academicTutor?: string[];
+    communityTutor?: string[];
     contactInformation?: string[];
-    tutors?: string[];
     status?: string[];
     description?: string[];
     projectType?: string[];
@@ -55,19 +59,19 @@ export async function createProjectAction(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Validation failed. Please check the fields.',
+      message: 'Falló la validación. Por favor revisa los campos.',
     };
   }
 
   try {
     await dbCreateProject(validatedFields.data as Omit<Project, 'id' | 'createdAt' | 'updatedAt'>);
   } catch (error) {
-    return { message: 'Database Error: Failed to Create Project.' };
+    return { message: 'Error de Base de Datos: Falló al Crear Proyecto.' };
   }
 
   revalidatePath('/projects');
   revalidatePath('/dashboard');
-  return { message: 'Project created successfully.' };
+  return { message: 'Proyecto creado exitosamente.' };
 }
 
 export async function updateProjectAction(
@@ -80,34 +84,34 @@ export async function updateProjectAction(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Validation failed. Please check the fields.',
+      message: 'Falló la validación. Por favor revisa los campos.',
     };
   }
 
   try {
     await dbUpdateProject(id, validatedFields.data);
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Project.' };
+    return { message: 'Error de Base de Datos: Falló al Actualizar Proyecto.' };
   }
 
   revalidatePath('/projects');
   revalidatePath(`/projects/${id}`);
   revalidatePath(`/projects/${id}/edit`);
   revalidatePath('/dashboard');
-  return { message: 'Project updated successfully.' };
+  return { message: 'Proyecto actualizado exitosamente.' };
 }
 
 export async function deleteProjectAction(id: string) {
   try {
     const success = await dbDeleteProject(id);
     if (!success) {
-      return { message: 'Failed to delete project or project not found.', success: false };
+      return { message: 'No se pudo eliminar el proyecto o proyecto no encontrado.', success: false };
     }
     revalidatePath('/projects');
     revalidatePath('/dashboard');
-    return { message: 'Project deleted successfully.', success: true };
+    return { message: 'Proyecto eliminado exitosamente.', success: true };
   } catch (error) {
-    return { message: 'Database Error: Failed to Delete Project.', success: false };
+    return { message: 'Error de Base de Datos: Falló al Eliminar Proyecto.', success: false };
   }
 }
 
@@ -133,13 +137,13 @@ export async function suggestProjectDetailsAction(description: string): Promise<
   { success: false; error: string }
 > {
   if (!description || description.trim().length < 10) {
-    return { success: false, error: "Description must be at least 10 characters long." };
+    return { success: false, error: "La descripción debe tener al menos 10 caracteres." };
   }
   try {
     const suggestion = await aiSuggestProjectDetails({ description });
     return { success: true, data: suggestion };
   } catch (error) {
     console.error("AI suggestion failed:", error);
-    return { success: false, error: "Failed to get AI suggestions. Please try again." };
+    return { success: false, error: "No se pudieron obtener sugerencias de la IA. Por favor, inténtalo de nuevo." };
   }
 }

@@ -3,46 +3,52 @@ import type { Project, ProjectStatus, ProjectStats } from './definitions';
 let projects: Project[] = [
   {
     id: '1',
-    projectName: 'Community Garden Initiative',
+    projectName: 'Iniciativa de Huerto Comunitario',
     location: 'Sector El Limón, Maracay',
-    responsibleDepartment: 'Agricultural Engineering',
-    contactInformation: 'j.perez@unefa.edu.ve',
-    tutors: 'Prof. Maria Silva, Prof. Carlos Mendez',
+    responsibleDepartment: 'Ingeniería Agronómica',
+    projectLead: 'Valeria Rojas Gómez',
+    academicTutor: 'Prof. María Silva',
+    communityTutor: 'Sr. Carlos Méndez',
+    contactInformation: 'v.rojas@unefa.edu.ve',
     status: 'In Progress',
-    description: 'Development of a community garden to promote sustainable agriculture and provide fresh produce to local families.',
-    projectType: 'Agricultural Development',
-    publicObjective: 'Improve food security and promote sustainable practices.',
-    scope: 'Establishment of garden plots, training workshops, and community outreach.',
+    description: 'Desarrollo de un huerto comunitario para promover la agricultura sostenible y proveer productos frescos a familias locales.',
+    projectType: 'Desarrollo Agrícola',
+    publicObjective: 'Mejorar la seguridad alimentaria y promover prácticas sostenibles.',
+    scope: 'Establecimiento de parcelas de cultivo, talleres de capacitación y alcance comunitario.',
     createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 days ago
     updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
   },
   {
     id: '2',
-    projectName: 'Digital Literacy Program for Seniors',
-    location: 'UNEFA Cagua Extension',
-    responsibleDepartment: 'Systems Engineering',
-    contactInformation: 'a.gonzalez@unefa.edu.ve',
-    tutors: 'Prof. Ana Rodriguez',
+    projectName: 'Programa de Alfabetización Digital para Adultos Mayores',
+    location: 'UNEFA Extensión Cagua',
+    responsibleDepartment: 'Ingeniería de Sistemas',
+    projectLead: 'Luis Alberto Torres',
+    academicTutor: 'Prof. Ana Rodríguez',
+    communityTutor: 'Sra. Carmen Rivas',
+    contactInformation: 'l.torres@unefa.edu.ve',
     status: 'Planning',
-    description: 'A program to teach basic computer and internet skills to senior citizens in the community.',
-    projectType: 'Educational Program',
-    publicObjective: 'Enhance digital inclusion for seniors.',
-    scope: 'Weekly workshops, personalized assistance, and resource material development.',
+    description: 'Un programa para enseñar habilidades básicas de computación e internet a adultos mayores de la comunidad.',
+    projectType: 'Programa Educativo',
+    publicObjective: 'Mejorar la inclusión digital de los adultos mayores.',
+    scope: 'Talleres semanales, asistencia personalizada y desarrollo de material de recursos.',
     createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
     updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
   },
   {
     id: '3',
-    projectName: 'River Cleanup Campaign',
-    location: 'Turmero River Banks',
-    responsibleDepartment: 'Civil Engineering & Environmental Science',
-    contactInformation: 'cleanup@unefa.edu.ve',
-    tutors: 'Prof. Luis Fernandez, Prof. Sofia Herrera',
+    projectName: 'Campaña de Limpieza del Río Turmero',
+    location: 'Riberas del Río Turmero, Turmero',
+    responsibleDepartment: 'Ingeniería Civil y Ciencias Ambientales',
+    projectLead: 'Sofía Contreras Díaz',
+    academicTutor: 'Prof. Luis Fernández',
+    communityTutor: 'Sr. José Alarcón (Líder Vecinal)',
+    contactInformation: 's.contreras@unefa.edu.ve',
     status: 'Completed',
-    description: 'Organized cleanup drives along the Turmero river to remove waste and raise environmental awareness.',
-    projectType: 'Environmental Conservation',
-    publicObjective: 'Reduce river pollution and promote community involvement in environmental protection.',
-    scope: 'Three cleanup events, waste sorting and recycling, awareness talks in local schools.',
+    description: 'Jornadas de limpieza organizadas a lo largo del río Turmero para remover desechos y concienciar sobre el medio ambiente.',
+    projectType: 'Conservación Ambiental',
+    publicObjective: 'Reducir la contaminación del río y promover la participación comunitaria en la protección ambiental.',
+    scope: 'Tres eventos de limpieza, clasificación y reciclaje de residuos, charlas de concienciación en escuelas locales.',
     createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(), // 60 days ago
     updatedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days ago
   },
@@ -58,7 +64,10 @@ export async function getProjects(query?: string): Promise<Project[]> {
     return projects.filter(p => 
       p.projectName.toLowerCase().includes(lowerCaseQuery) ||
       p.responsibleDepartment.toLowerCase().includes(lowerCaseQuery) ||
-      p.location.toLowerCase().includes(lowerCaseQuery)
+      p.location.toLowerCase().includes(lowerCaseQuery) ||
+      p.projectLead.toLowerCase().includes(lowerCaseQuery) ||
+      p.academicTutor.toLowerCase().includes(lowerCaseQuery) ||
+      p.communityTutor.toLowerCase().includes(lowerCaseQuery)
     );
   }
   return [...projects].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());

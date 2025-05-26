@@ -6,8 +6,8 @@ export default function NewProjectPage() {
   return (
     <div>
       <PageHeader
-        title="Create New Project"
-        description="Fill in the details for the new community project."
+        title="Crear Nuevo Proyecto"
+        description="Completa los detalles para el nuevo proyecto comunitario."
       />
       <ProjectForm formAction={createProjectAction} />
     </div>

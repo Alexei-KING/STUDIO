@@ -7,11 +7,15 @@ import { Badge } from '@/components/ui/badge';
 import { getProjectByIdAction } from '@/lib/actions/project.actions';
 import type { Project, ProjectStatus } from '@/lib/definitions';
 import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Para formato de fecha en español
 import {
   MapPin,
   Building2,
   Mail,
   Users,
+  User, // Para Líder de Proyecto
+  BookUser, // Para Tutor Académico
+  Users2, // Para Tutor Comunitario
   Activity,
   FileText,
   Edit,
@@ -19,10 +23,11 @@ import {
   Target,
   ClipboardList,
   Info,
+  UserSquare, // Icono alternativo para Líder de proyecto
 } from 'lucide-react';
 import Image from 'next/image';
 
-export const dynamic = 'force-dynamic'; // Ensure fresh data on each request for this page
+export const dynamic = 'force-dynamic'; 
 
 async function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const project: Project | undefined = await getProjectByIdAction(params.id);
@@ -42,26 +47,28 @@ async function ProjectDetailsPage({ params }: { params: { id: string } }) {
   };
 
   const detailItems = [
-    { label: 'Location', value: project.location, icon: MapPin },
-    { label: 'Responsible Department', value: project.responsibleDepartment, icon: Building2 },
-    { label: 'Contact Information', value: project.contactInformation, icon: Mail },
-    { label: 'Tutor(s)', value: project.tutors, icon: Users },
-    { label: 'Status', value: <Badge variant={getStatusVariant(project.status)}>{project.status}</Badge>, icon: Activity },
+    { label: 'Líder del Proyecto', value: project.projectLead, icon: UserSquare },
+    { label: 'Ubicación', value: project.location, icon: MapPin },
+    { label: 'Departamento/Carrera Responsable', value: project.responsibleDepartment, icon: Building2 },
+    { label: 'Tutor Académico', value: project.academicTutor, icon: BookUser },
+    { label: 'Tutor Comunitario', value: project.communityTutor, icon: Users2 },
+    { label: 'Correo Electrónico de Contacto', value: project.contactInformation, icon: Mail },
+    { label: 'Estado', value: <Badge variant={getStatusVariant(project.status)}>{project.status === "Planning" ? "Planificación" : project.status === "In Progress" ? "En Progreso" : project.status === "Completed" ? "Completado" : "En Espera"}</Badge>, icon: Activity },
   ];
 
   const aiSuggestedItems = [
-    { label: 'Project Type', value: project.projectType, icon: Info },
-    { label: 'Public Objective', value: project.publicObjective, icon: Target },
-    { label: 'Scope', value: project.scope, icon: ClipboardList },
+    { label: 'Tipo de Proyecto', value: project.projectType, icon: Info },
+    { label: 'Objetivo Público', value: project.publicObjective, icon: Target },
+    { label: 'Alcance', value: project.scope, icon: ClipboardList },
   ].filter(item => item.value);
 
 
   return (
     <div>
-      <PageHeader title={project.projectName} description={`Detailed view of project ID: ${project.id}`}>
+      <PageHeader title={project.projectName} description={`Vista detallada del proyecto ID: ${project.id}`}>
         <Button asChild variant="outline">
           <Link href={`/projects/${project.id}/edit`}>
-            <Edit className="mr-2 h-4 w-4" /> Edit Project
+            <Edit className="mr-2 h-4 w-4" /> Editar Proyecto
           </Link>
         </Button>
       </PageHeader>
@@ -70,20 +77,20 @@ async function ProjectDetailsPage({ params }: { params: { id: string } }) {
         <div className="lg:col-span-2 space-y-6">
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle>Project Overview</CardTitle>
+              <CardTitle>Resumen del Proyecto</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CalendarDays className="h-4 w-4" />
-                <span>Created: {format(new Date(project.createdAt), 'MMMM dd, yyyy HH:mm')}</span>
+                <span>Creado: {format(new Date(project.createdAt), 'dd MMMM, yyyy HH:mm', { locale: es })}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CalendarDays className="h-4 w-4" />
-                <span>Last Updated: {format(new Date(project.updatedAt), 'MMMM dd, yyyy HH:mm')}</span>
+                <span>Última Actualización: {format(new Date(project.updatedAt), 'dd MMMM, yyyy HH:mm', { locale: es })}</span>
               </div>
               <div>
                 <h3 className="font-semibold mb-1 text-lg flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-primary" /> Description
+                  <FileText className="h-5 w-5 text-primary" /> Descripción
                 </h3>
                 <p className="text-foreground whitespace-pre-wrap">{project.description}</p>
               </div>
@@ -93,8 +100,8 @@ async function ProjectDetailsPage({ params }: { params: { id: string } }) {
           {aiSuggestedItems.length > 0 && (
             <Card className="shadow-lg">
               <CardHeader>
-                <CardTitle>AI Suggested Details</CardTitle>
-                <CardDescription>These details were suggested or filled with AI assistance.</CardDescription>
+                <CardTitle>Detalles Sugeridos por IA</CardTitle>
+                <CardDescription>Estos detalles fueron sugeridos o completados con asistencia de IA.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 {aiSuggestedItems.map(item => (
@@ -115,7 +122,7 @@ async function ProjectDetailsPage({ params }: { params: { id: string } }) {
         <div className="space-y-6">
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle>Key Information</CardTitle>
+              <CardTitle>Información Clave</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {detailItems.map(item => (
@@ -128,9 +135,9 @@ async function ProjectDetailsPage({ params }: { params: { id: string } }) {
               ))}
             </CardContent>
           </Card>
-          <Card className="shadow-lg" data-ai-hint="community collaboration">
+          <Card className="shadow-lg" data-ai-hint="colaboración comunitaria">
              <CardHeader>
-                <CardTitle>Project Image</CardTitle>
+                <CardTitle>Imagen del Proyecto</CardTitle>
              </CardHeader>
              <CardContent>
                 <Image 
@@ -139,7 +146,7 @@ async function ProjectDetailsPage({ params }: { params: { id: string } }) {
                     width={600} 
                     height={400}
                     className="rounded-md object-cover aspect-video"
-                    data-ai-hint="community project"
+                    data-ai-hint="proyecto comunitario"
                 />
              </CardContent>
           </Card>

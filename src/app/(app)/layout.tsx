@@ -36,9 +36,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/projects', label: 'Projects', icon: Briefcase },
-  { href: '/projects/new', label: 'New Project', icon: PlusCircle },
+  { href: '/dashboard', label: 'Panel de Control', icon: LayoutDashboard },
+  { href: '/projects', label: 'Proyectos', icon: Briefcase },
+  { href: '/projects/new', label: 'Nuevo Proyecto', icon: PlusCircle },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -79,26 +79,26 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   <AvatarFallback>U</AvatarFallback>
                 </Avatar>
                 <div className="text-left group-data-[collapsible=icon]:hidden">
-                  <p className="text-sm font-medium">Admin User</p>
+                  <p className="text-sm font-medium">Usuario Admin</p>
                   <p className="text-xs text-muted-foreground">admin@unefa.edu.ve</p>
                 </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="right" align="start" className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <UserCircle className="mr-2 h-4 w-4" />
-                <span>Profile</span>
+                <span>Perfil</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
+                <span>Configuración</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
+                <span>Cerrar Sesión</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

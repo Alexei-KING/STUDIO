@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'UNEFA Community Project Hub',
-  description: 'Community Project Management Platform for UNEFA',
+  title: 'UNEFA Hub de Proyectos Comunitarios',
+  description: 'Plataforma de Gestión de Proyectos Comunitarios para UNEFA',
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
         <Toaster />

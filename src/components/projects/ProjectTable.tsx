@@ -19,7 +19,9 @@ import { DeleteProjectDialog } from './DeleteProjectDialog';
 import { getProjectsAction } from '@/lib/actions/project.actions';
 import { Spinner } from '@/components/shared/Spinner';
 import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { PageHeader } from '../shared/PageHeader';
+import { Card, CardContent } from '@/components/ui/card'; // Importado para los estados vacíos
 
 export function ProjectTable({ initialProjects }: { initialProjects: Project[] }) {
   const [projects, setProjects] = useState<Project[]>(initialProjects);
@@ -39,7 +41,7 @@ export function ProjectTable({ initialProjects }: { initialProjects: Project[] }
   
   const refreshProjects = () => {
      startTransition(async () => {
-      const fetchedProjects = await getProjectsAction(searchTerm); // or without search term if you want full list
+      const fetchedProjects = await getProjectsAction(searchTerm); 
       setProjects(fetchedProjects);
     });
   }
@@ -53,20 +55,30 @@ export function ProjectTable({ initialProjects }: { initialProjects: Project[] }
       default: return 'outline';
     }
   };
+  
+  const getStatusLabel = (status: ProjectStatus) => {
+     switch (status) {
+      case 'Completed': return 'Completado';
+      case 'In Progress': return 'En Progreso';
+      case 'Planning': return 'Planificación';
+      case 'On Hold': return 'En Espera';
+      default: return status;
+    }
+  }
 
   return (
     <div>
-      <PageHeader title="Community Projects" description="Manage and view all community projects.">
+      <PageHeader title="Proyectos Comunitarios" description="Gestiona y visualiza todos los proyectos comunitarios.">
         <Button asChild>
           <Link href="/projects/new">
-            <PlusCircle className="mr-2 h-4 w-4" /> Create New Project
+            <PlusCircle className="mr-2 h-4 w-4" /> Crear Nuevo Proyecto
           </Link>
         </Button>
       </PageHeader>
 
       <div className="mb-4 flex items-center gap-2">
         <Input
-          placeholder="Search projects..."
+          placeholder="Buscar proyectos..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="max-w-sm"
@@ -74,6 +86,7 @@ export function ProjectTable({ initialProjects }: { initialProjects: Project[] }
         />
         <Button onClick={handleSearch} disabled={isPending}>
           {isPending ? <Spinner size="sm" /> : <Search className="h-4 w-4" />}
+          <span className="sr-only">Buscar</span>
         </Button>
       </div>
 
@@ -86,7 +99,7 @@ export function ProjectTable({ initialProjects }: { initialProjects: Project[] }
       {!isPending && projects.length === 0 && searchTerm && (
          <Card className="mt-6">
           <CardContent className="pt-6">
-            <p className="text-center text-muted-foreground">No projects found for your search criteria.</p>
+            <p className="text-center text-muted-foreground">No se encontraron proyectos para tus criterios de búsqueda.</p>
           </CardContent>
         </Card>
       )}
@@ -94,11 +107,11 @@ export function ProjectTable({ initialProjects }: { initialProjects: Project[] }
       {!isPending && projects.length === 0 && !searchTerm && (
         <Card className="mt-6">
           <CardContent className="pt-6 text-center">
-            <p className="text-lg font-semibold mb-2">No projects yet!</p>
-            <p className="text-muted-foreground mb-4">Be the first to add a community project.</p>
+            <p className="text-lg font-semibold mb-2">¡Aún no hay proyectos!</p>
+            <p className="text-muted-foreground mb-4">Sé el primero en agregar un proyecto comunitario.</p>
             <Button asChild>
               <Link href="/projects/new">
-                <PlusCircle className="mr-2 h-4 w-4" /> Create New Project
+                <PlusCircle className="mr-2 h-4 w-4" /> Crear Nuevo Proyecto
               </Link>
             </Button>
           </CardContent>
@@ -111,12 +124,12 @@ export function ProjectTable({ initialProjects }: { initialProjects: Project[] }
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Project Name</TableHead>
-                <TableHead className="hidden md:table-cell">Department</TableHead>
-                <TableHead className="hidden lg:table-cell">Location</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="hidden md:table-cell">Created At</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Nombre del Proyecto</TableHead>
+                <TableHead className="hidden md:table-cell">Departamento/Carrera</TableHead>
+                <TableHead className="hidden lg:table-cell">Ubicación</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead className="hidden md:table-cell">Fecha Creación</TableHead>
+                <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -126,23 +139,23 @@ export function ProjectTable({ initialProjects }: { initialProjects: Project[] }
                   <TableCell className="hidden md:table-cell">{project.responsibleDepartment}</TableCell>
                   <TableCell className="hidden lg:table-cell">{project.location}</TableCell>
                   <TableCell>
-                    <Badge variant={getStatusVariant(project.status)}>{project.status}</Badge>
+                    <Badge variant={getStatusVariant(project.status)}>{getStatusLabel(project.status)}</Badge>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    {format(new Date(project.createdAt), 'MMM dd, yyyy')}
+                    {format(new Date(project.createdAt), 'dd MMM, yyyy', { locale: es })}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
                       <Button asChild variant="ghost" size="icon">
                         <Link href={`/projects/${project.id}`}>
                           <Eye className="h-4 w-4" />
-                          <span className="sr-only">View</span>
+                          <span className="sr-only">Ver</span>
                         </Link>
                       </Button>
                       <Button asChild variant="ghost" size="icon">
                         <Link href={`/projects/${project.id}/edit`}>
                           <Edit className="h-4 w-4" />
-                          <span className="sr-only">Edit</span>
+                          <span className="sr-only">Editar</span>
                         </Link>
                       </Button>
                       <DeleteProjectDialog 
@@ -161,6 +174,3 @@ export function ProjectTable({ initialProjects }: { initialProjects: Project[] }
     </div>
   );
 }
-
-// Need Card for empty states
-import { Card, CardContent } from '@/components/ui/card';

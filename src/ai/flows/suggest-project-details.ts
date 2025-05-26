@@ -1,10 +1,10 @@
 'use server';
 /**
- * @fileOverview AI-powered tool to suggest project details based on a description.
+ * @fileOverview Herramienta potenciada por IA para sugerir detalles de proyecto basados en una descripción.
  *
- * - suggestProjectDetails - A function that suggests project details.
- * - SuggestProjectDetailsInput - The input type for the suggestProjectDetails function.
- * - SuggestProjectDetailsOutput - The return type for the suggestProjectDetails function.
+ * - suggestProjectDetails - Una función que sugiere detalles del proyecto.
+ * - SuggestProjectDetailsInput - El tipo de entrada para la función suggestProjectDetails.
+ * - SuggestProjectDetailsOutput - El tipo de retorno para la función suggestProjectDetails.
  */
 
 import {ai} from '@/ai/genkit';
@@ -13,7 +13,7 @@ import {z} from 'genkit';
 const SuggestProjectDetailsInputSchema = z.object({
   description: z
     .string()
-    .describe('The description of the project for which to suggest details.'),
+    .describe('La descripción del proyecto para el cual sugerir detalles.'),
 });
 export type SuggestProjectDetailsInput = z.infer<
   typeof SuggestProjectDetailsInputSchema
@@ -22,11 +22,11 @@ export type SuggestProjectDetailsInput = z.infer<
 const SuggestProjectDetailsOutputSchema = z.object({
   projectType: z
     .string()
-    .describe('Suggested project type based on the description.'),
+    .describe('Tipo de proyecto sugerido basado en la descripción.'),
   publicObjective: z
     .string()
-    .describe('Suggested public objective for the project.'),
-  scope: z.string().describe('Suggested scope of the project.'),
+    .describe('Objetivo público sugerido para el proyecto.'),
+  scope: z.string().describe('Alcance sugerido del proyecto.'),
 });
 export type SuggestProjectDetailsOutput = z.infer<
   typeof SuggestProjectDetailsOutputSchema
@@ -42,13 +42,13 @@ const prompt = ai.definePrompt({
   name: 'suggestProjectDetailsPrompt',
   input: {schema: SuggestProjectDetailsInputSchema},
   output: {schema: SuggestProjectDetailsOutputSchema},
-  prompt: `You are an AI assistant designed to suggest project details.
+  prompt: `Eres un asistente de IA diseñado para sugerir detalles de proyectos.
 
-  Based on the following project description, suggest a project type, a public objective, and a scope for the project.
+  Basado en la siguiente descripción del proyecto, sugiere un tipo de proyecto, un objetivo público y un alcance para el proyecto.
 
-  Description: {{{description}}}
+  Descripción: {{{description}}}
 
-  Please provide the suggestions in a structured format.
+  Por favor, proporciona las sugerencias en un formato estructurado.
   `,
 });
 
