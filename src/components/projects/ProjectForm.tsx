@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect } from 'react';
@@ -61,12 +62,12 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
 
   const {
     register,
-    handleSubmit, 
+    handleSubmit,
     formState: { errors, isSubmitting },
     watch,
     setValue,
     reset,
-    control, 
+    control,
   } = useForm<ProjectFormData>({
     resolver: zodResolver(projectFormClientSchema),
     defaultValues: project
@@ -93,6 +94,7 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
   });
 
   const currentDescription = watch('description');
+  const currentStatus = watch('status');
 
   useEffect(() => {
     if (state?.message) {
@@ -100,10 +102,10 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
         toast({ title: 'Error', description: state.message, variant: 'destructive' });
       } else {
         toast({ title: 'Éxito', description: state.message, className: 'bg-accent text-accent-foreground border-accent' });
-        if (!isEditMode) { 
-           reset(); 
-           router.push('/projects'); 
-        } else if (project) { 
+        if (!isEditMode) {
+           reset();
+           router.push('/projects');
+        } else if (project) {
             router.push(`/projects/${project.id}`);
         }
       }
@@ -188,19 +190,21 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
               {state?.errors?.status && state.errors.status.map(e => <p key={e} className="text-sm text-destructive mt-1">{e}</p>)}
             </div>
           </div>
-          
-          <div>
-            <Label htmlFor="statusDescription">Notas Adicionales sobre el Estado (Opcional)</Label>
-            <Textarea
-                id="statusDescription"
-                rows={3}
-                {...register('statusDescription')}
-                placeholder="Escribe aquí cualquier detalle relevante sobre el estado actual del proyecto (ej: motivo de pausa, próximo hito, etc.)"
-                aria-invalid={errors.statusDescription ? "true" : "false"}
-            />
-            {errors.statusDescription && <p className="text-sm text-destructive mt-1">{errors.statusDescription.message}</p>}
-            {state?.errors?.statusDescription && state.errors.statusDescription.map(e => <p key={e} className="text-sm text-destructive mt-1">{e}</p>)}
-          </div>
+
+          {currentStatus !== 'Completed' && (
+            <div>
+              <Label htmlFor="statusDescription">Notas Adicionales sobre el Estado (Opcional)</Label>
+              <Textarea
+                  id="statusDescription"
+                  rows={3}
+                  {...register('statusDescription')}
+                  placeholder="Escribe aquí cualquier detalle relevante sobre el estado actual del proyecto (ej: motivo de pausa, próximo hito, etc.)"
+                  aria-invalid={errors.statusDescription ? "true" : "false"}
+              />
+              {errors.statusDescription && <p className="text-sm text-destructive mt-1">{errors.statusDescription.message}</p>}
+              {state?.errors?.statusDescription && state.errors.statusDescription.map(e => <p key={e} className="text-sm text-destructive mt-1">{e}</p>)}
+            </div>
+          )}
 
           <div>
             <Label htmlFor="description">Descripción Detallada del Proyecto</Label>
@@ -214,7 +218,7 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
             {errors.description && <p className="text-sm text-destructive mt-1">{errors.description.message}</p>}
             {state?.errors?.description && state.errors.description.map(e => <p key={e} className="text-sm text-destructive mt-1">{e}</p>)}
           </div>
-          
+
           <div className="space-y-2 p-4 border rounded-md bg-secondary/30">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <h3 className="text-lg font-semibold">Asistencia IA para Proyectos</h3>
