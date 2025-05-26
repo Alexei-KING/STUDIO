@@ -25,6 +25,7 @@ const ProjectSchema = z.object({
   communityTutor: z.string().min(5, 'El nombre del tutor comunitario (nombre y dos apellidos) debe tener al menos 5 caracteres.'),
   contactInformation: z.string().email('Por favor, introduce un correo electrónico válido.').min(5, 'El correo electrónico de contacto debe tener al menos 5 caracteres'),
   status: z.enum(PROJECT_STATUSES, { errorMap: () => ({ message: "Por favor, selecciona un estado válido."}) }),
+  statusDescription: z.string().optional(),
   description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres'),
   projectType: z.string().optional(),
   publicObjective: z.string().optional(),
@@ -41,6 +42,7 @@ export type CreateProjectFormState = {
     communityTutor?: string[];
     contactInformation?: string[];
     status?: string[];
+    statusDescription?: string[];
     description?: string[];
     projectType?: string[];
     publicObjective?: string[];

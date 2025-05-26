@@ -38,6 +38,7 @@ const projectFormClientSchema = z.object({
   communityTutor: z.string().min(5, 'El nombre del tutor comunitario (nombre y dos apellidos) debe tener al menos 5 caracteres.'),
   contactInformation: z.string().email('Por favor, introduce un correo electrónico válido.').min(5, 'El correo electrónico de contacto debe tener al menos 5 caracteres'),
   status: z.enum(PROJECT_STATUSES, { errorMap: () => ({ message: "Por favor, selecciona un estado válido."}) }),
+  statusDescription: z.string().optional(),
   description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres para la Asistencia IA y el envío.'),
   projectType: z.string().optional(),
   publicObjective: z.string().optional(),
@@ -60,18 +61,19 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
 
   const {
     register,
-    handleSubmit, // No se usa directamente aquí con useFormState, pero se mantiene por si acaso.
+    handleSubmit, 
     formState: { errors, isSubmitting },
     watch,
     setValue,
     reset,
-    control, // Necesario para el componente Select
+    control, 
   } = useForm<ProjectFormData>({
     resolver: zodResolver(projectFormClientSchema),
     defaultValues: project
       ? {
           ...project,
           status: project.status as ProjectStatus,
+          statusDescription: project.statusDescription || '',
         }
       : {
           projectName: '',
@@ -82,6 +84,7 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
           communityTutor: '',
           contactInformation: '',
           status: 'Planning',
+          statusDescription: '',
           description: '',
           projectType: '',
           publicObjective: '',
@@ -161,7 +164,7 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
               {errors.contactInformation && <p className="text-sm text-destructive mt-1">{errors.contactInformation.message}</p>}
               {state?.errors?.contactInformation && state.errors.contactInformation.map(e => <p key={e} className="text-sm text-destructive mt-1">{e}</p>)}
             </div>
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="status">Estado</Label>
               <Controller
                 name="status"
@@ -185,9 +188,22 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
               {state?.errors?.status && state.errors.status.map(e => <p key={e} className="text-sm text-destructive mt-1">{e}</p>)}
             </div>
           </div>
+          
+          <div>
+            <Label htmlFor="statusDescription">Notas Adicionales sobre el Estado (Opcional)</Label>
+            <Textarea
+                id="statusDescription"
+                rows={3}
+                {...register('statusDescription')}
+                placeholder="Escribe aquí cualquier detalle relevante sobre el estado actual del proyecto (ej: motivo de pausa, próximo hito, etc.)"
+                aria-invalid={errors.statusDescription ? "true" : "false"}
+            />
+            {errors.statusDescription && <p className="text-sm text-destructive mt-1">{errors.statusDescription.message}</p>}
+            {state?.errors?.statusDescription && state.errors.statusDescription.map(e => <p key={e} className="text-sm text-destructive mt-1">{e}</p>)}
+          </div>
 
           <div>
-            <Label htmlFor="description">Descripción Detallada</Label>
+            <Label htmlFor="description">Descripción Detallada del Proyecto</Label>
             <Textarea
               id="description"
               rows={5}

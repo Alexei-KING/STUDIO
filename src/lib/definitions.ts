@@ -10,6 +10,7 @@ export interface Project {
   communityTutor: string; // Nombre del tutor comunitario
   contactInformation: string; // Correo electrónico de contacto principal
   status: ProjectStatus;
+  statusDescription?: string; // Descripción adicional sobre el estado actual
   description: string;
   projectType?: string; // AI suggested
   publicObjective?: string; // AI suggested

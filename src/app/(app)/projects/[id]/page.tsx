@@ -24,6 +24,7 @@ import {
   ClipboardList,
   Info,
   UserSquare, // Icono alternativo para Líder de proyecto
+  MessageSquareText, // Para la descripción del estado
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -45,6 +46,16 @@ async function ProjectDetailsPage({ params }: { params: { id: string } }) {
       default: return 'outline';
     }
   };
+  
+  const getStatusLabel = (status: ProjectStatus) => {
+     switch (status) {
+      case 'Completed': return 'Completado';
+      case 'In Progress': return 'En Progreso';
+      case 'Planning': return 'Planificación';
+      case 'On Hold': return 'En Espera';
+      default: return status;
+    }
+  }
 
   const detailItems = [
     { label: 'Líder del Proyecto', value: project.projectLead, icon: UserSquare },
@@ -53,7 +64,21 @@ async function ProjectDetailsPage({ params }: { params: { id: string } }) {
     { label: 'Tutor Académico', value: project.academicTutor, icon: BookUser },
     { label: 'Tutor Comunitario', value: project.communityTutor, icon: Users2 },
     { label: 'Correo Electrónico de Contacto', value: project.contactInformation, icon: Mail },
-    { label: 'Estado', value: <Badge variant={getStatusVariant(project.status)}>{project.status === "Planning" ? "Planificación" : project.status === "In Progress" ? "En Progreso" : project.status === "Completed" ? "Completado" : "En Espera"}</Badge>, icon: Activity },
+    { 
+      label: 'Estado', 
+      value: (
+        <div className="flex flex-col items-start">
+          <Badge variant={getStatusVariant(project.status)}>{getStatusLabel(project.status)}</Badge>
+          {project.statusDescription && (
+            <div className="mt-1.5 flex items-start text-xs text-muted-foreground">
+              <MessageSquareText className="h-3.5 w-3.5 mr-1.5 flex-shrink-0 relative top-0.5" />
+              <span>{project.statusDescription}</span>
+            </div>
+          )}
+        </div>
+      ), 
+      icon: Activity 
+    },
   ];
 
   const aiSuggestedItems = [
@@ -90,7 +115,7 @@ async function ProjectDetailsPage({ params }: { params: { id: string } }) {
               </div>
               <div>
                 <h3 className="font-semibold mb-1 text-lg flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-primary" /> Descripción
+                  <FileText className="h-5 w-5 text-primary" /> Descripción del Proyecto
                 </h3>
                 <p className="text-foreground whitespace-pre-wrap">{project.description}</p>
               </div>
