@@ -3,7 +3,7 @@ import { ProjectCard } from '@/components/projects/ProjectCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getProjectStatsAction, getRecentProjectsAction } from '@/lib/actions/project.actions';
 import type { Project, ProjectStats } from '@/lib/definitions';
-import { Users, ListChecks, PieChart, ClockRewind } from 'lucide-react';
+import { Users, ListChecks, PieChart, Clock } from 'lucide-react';
 
 async function DashboardPage() {
   const stats: ProjectStats = await getProjectStatsAction();
@@ -11,7 +11,7 @@ async function DashboardPage() {
 
   const statItems = [
     { title: 'Total Projects', value: stats.total, icon: PieChart, color: 'text-primary' },
-    { title: 'In Progress', value: stats.inProgress, icon: ClockRewind, color: 'text-blue-500' },
+    { title: 'In Progress', value: stats.inProgress, icon: Clock, color: 'text-blue-500' },
     { title: 'Completed', value: stats.completed, icon: ListChecks, color: 'text-green-500' },
     { title: 'Planning', value: stats.planning, icon: Users, color: 'text-yellow-500' },
   ];
