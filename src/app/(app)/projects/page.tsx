@@ -1,9 +1,11 @@
+
 import { getProjectsAction } from '@/lib/actions/project.actions';
 import { ProjectTable } from '@/components/projects/ProjectTable';
 import type { Project } from '@/lib/definitions';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
+export const dynamic = 'force-dynamic'; // Asegura que la página se renderice dinámicamente
 
 function ProjectTableSkeleton() {
   return (
@@ -49,3 +51,4 @@ export default async function ProjectsPage({
     </Suspense>
   );
 }
+
