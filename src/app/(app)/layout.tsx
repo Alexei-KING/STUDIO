@@ -7,9 +7,9 @@ import {
   LayoutDashboard,
   Briefcase,
   PlusCircle,
-  Settings,
   LogOut,
   UserCircle,
+  // Settings icon is no longer needed
 } from 'lucide-react';
 
 import {
@@ -40,7 +40,7 @@ const navItems = [
   { href: '/dashboard', label: 'Panel de Control', icon: LayoutDashboard },
   { href: '/projects', label: 'Proyectos', icon: Briefcase },
   { href: '/projects/new', label: 'Nuevo Proyecto', icon: PlusCircle },
-  { href: '/settings', label: 'Configuración', icon: Settings },
+  // { href: '/settings', label: 'Configuración', icon: Settings }, // Removed Settings
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -102,12 +102,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   <span>Perfil</span>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/settings">
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Configuración</span>
-                </Link>
-              </DropdownMenuItem>
+              {/* Removed Settings DropdownMenuItem */}
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
