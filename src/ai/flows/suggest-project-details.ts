@@ -47,8 +47,6 @@ const prompt = ai.definePrompt({
   Basado en la siguiente descripción del proyecto, sugiere un tipo de proyecto, un objetivo público y un alcance para el proyecto.
 
   Descripción: {{{description}}}
-
-  Por favor, proporciona las sugerencias en un formato estructurado.
   `,
 });
 
