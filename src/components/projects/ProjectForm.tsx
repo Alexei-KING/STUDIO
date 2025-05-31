@@ -172,7 +172,7 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
                 name="status"
                 control={control}
                 render={({ field }) => (
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <SelectTrigger id="status" aria-invalid={errors.status ? "true" : "false"}>
                       <SelectValue placeholder="Seleccionar estado" />
                     </SelectTrigger>
