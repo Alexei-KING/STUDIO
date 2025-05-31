@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useActionState } from 'react'; // Updated import
+import { useActionState } from 'react'; 
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -107,8 +107,8 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
         toast({ title: 'Éxito', description: state.message, className: 'bg-accent text-accent-foreground border-accent' });
         if (!isEditMode) {
            reset();
-           // Force a full page reload to ensure the projects list is updated
-           window.location.assign('/projects');
+           // Force a full page reload with cache busting to ensure the projects list is updated
+           window.location.assign('/projects?refresh=' + new Date().getTime());
         } else if (project) {
             router.push(`/projects/${project.id}`);
         }
@@ -178,7 +178,7 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
                 render={({ field }) => (
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value} // Use value for controlled component
+                    value={field.value} 
                     disabled={!isEditMode}
                   >
                     <SelectTrigger
