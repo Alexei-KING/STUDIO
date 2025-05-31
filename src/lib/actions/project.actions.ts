@@ -1,3 +1,4 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -56,7 +57,16 @@ export async function createProjectAction(
   prevState: CreateProjectFormState | undefined,
   formData: FormData
 ): Promise<CreateProjectFormState> {
-  const validatedFields = ProjectSchema.safeParse(Object.fromEntries(formData.entries()));
+  // Convert FormData to a plain object
+  const rawFormData = Object.fromEntries(formData.entries());
+
+  // If 'status' is not present in rawFormData (because the select was disabled for new projects),
+  // explicitly set it to 'Planning'. This ensures validation passes.
+  if (rawFormData.status === undefined) {
+    rawFormData.status = 'Planning';
+  }
+
+  const validatedFields = ProjectSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
     return {
@@ -66,6 +76,7 @@ export async function createProjectAction(
   }
 
   try {
+    // Use validatedFields.data which is type-safe
     await dbCreateProject(validatedFields.data as Omit<Project, 'id' | 'createdAt' | 'updatedAt'>);
   } catch (error) {
     return { message: 'Error de Base de Datos: Falló al Crear Proyecto.' };
