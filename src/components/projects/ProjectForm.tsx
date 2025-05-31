@@ -1,10 +1,11 @@
 
 'use client';
 
-import { useEffect, useActionState } from 'react';
+import { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useActionState } from 'react'; // Updated import
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,7 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card';
-import { PROJECT_STATUS_OPTIONS, PROJECT_STATUSES, type ProjectStatus } from '@/lib/constants'; // Importar ProjectStatus type
+import { PROJECT_STATUS_OPTIONS, PROJECT_STATUSES, type ProjectStatus } from '@/lib/constants';
 import type { Project } from '@/lib/definitions';
 import { AIProjectAssistButton } from './AIProjectAssistButton';
 import { useToast } from '@/hooks/use-toast';
@@ -68,7 +69,7 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
     defaultValues: project
       ? {
           ...project,
-          status: project.status, // Ya es del tipo ProjectStatus correcto
+          status: project.status,
           statusDescription: project.statusDescription || '',
         }
       : {
@@ -79,7 +80,7 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
           academicTutor: '',
           communityTutor: '',
           contactInformation: '',
-          status: 'Planning', // Valor por defecto para nuevos proyectos
+          status: 'Planning',
           statusDescription: '',
           description: '',
           projectType: '',
@@ -91,12 +92,9 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
   const currentDescription = watch('description');
   const currentStatus = watch('status');
 
-  // Asegura que el estado sea 'Planning' y no editable al crear.
   useEffect(() => {
     if (!isEditMode && !project) {
-      // El defaultValues ya establece 'Planning'.
-      // Si quisiéramos forzarlo explícitamente o si el Select estuviera completamente separado:
-      // setValue('status', 'Planning', { shouldValidate: false }); // No es necesario si defaultValues funciona
+      // Default 'Planning' is set by defaultValues
     }
   }, [isEditMode, project, setValue]);
 
@@ -109,7 +107,8 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
         toast({ title: 'Éxito', description: state.message, className: 'bg-accent text-accent-foreground border-accent' });
         if (!isEditMode) {
            reset();
-           router.push('/projects');
+           // Force a full page reload to ensure the projects list is updated
+           window.location.assign('/projects');
         } else if (project) {
             router.push(`/projects/${project.id}`);
         }
@@ -176,12 +175,11 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
               <Controller
                 name="status"
                 control={control}
-                defaultValue={isEditMode ? project?.status : 'Planning'} // Asegura el valor correcto
                 render={({ field }) => (
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={!isEditMode} // Deshabilitado si no está en modo edición
+                    value={field.value} // Use value for controlled component
+                    disabled={!isEditMode}
                   >
                     <SelectTrigger
                       id="status"
@@ -205,8 +203,6 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
             </div>
           </div>
 
-          {/* El campo statusDescription se muestra si el estado actual no es 'Completado' */}
-          {/* En modo creación, currentStatus será 'Planning' por defecto, así que se mostrará. */}
           {currentStatus !== 'Completed' && (
             <div>
               <Label htmlFor="statusDescription">Notas Adicionales sobre el Estado (Opcional)</Label>
@@ -277,3 +273,4 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
     </form>
   );
 }
+
