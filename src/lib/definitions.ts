@@ -1,4 +1,6 @@
-export type ProjectStatus = "Planning" | "In Progress" | "Completed" | "On Hold";
+
+// Importa el tipo ProjectStatus desde constants.ts donde ahora se define correctamente.
+import type { ProjectStatus } from './constants';
 
 export interface Project {
   id: string;

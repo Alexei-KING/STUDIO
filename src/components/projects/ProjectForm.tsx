@@ -1,11 +1,10 @@
 
 'use client';
 
-import { useEffect, useActionState } from 'react'; // Changed import
+import { useEffect, useActionState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-// import { useFormState } from 'react-dom'; // Removed old import
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,17 +18,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card';
-import { PROJECT_STATUS_OPTIONS, PROJECT_STATUSES } from '@/lib/constants';
-import type { Project, ProjectStatus } from '@/lib/definitions';
+import { PROJECT_STATUS_OPTIONS, PROJECT_STATUSES, type ProjectStatus } from '@/lib/constants'; // Importar ProjectStatus type
+import type { Project } from '@/lib/definitions';
 import { AIProjectAssistButton } from './AIProjectAssistButton';
 import { useToast } from '@/hooks/use-toast';
 import type { CreateProjectFormState } from '@/lib/actions/project.actions';
 import { Spinner } from '@/components/shared/Spinner';
 import { useRouter } from 'next/navigation';
 
-
-// Nota: El schema de Zod se define en project.actions.ts para validación del lado del servidor.
-// Este schema es para validación del lado del cliente y debe coincidir.
 const projectFormClientSchema = z.object({
   projectName: z.string().min(3, 'El nombre del proyecto debe tener al menos 3 caracteres'),
   location: z.string().min(3, 'La ubicación debe tener al menos 3 caracteres'),
@@ -46,7 +42,6 @@ const projectFormClientSchema = z.object({
   scope: z.string().optional(),
 });
 
-
 export type ProjectFormData = z.infer<typeof projectFormClientSchema>;
 
 interface ProjectFormProps {
@@ -58,7 +53,7 @@ interface ProjectFormProps {
 export function ProjectForm({ project, formAction, isEditMode = false }: ProjectFormProps) {
   const { toast } = useToast();
   const router = useRouter();
-  const [state, dispatch] = useActionState(formAction, undefined); // Changed to useActionState
+  const [state, dispatch] = useActionState(formAction, undefined);
 
   const {
     register,
@@ -73,7 +68,7 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
     defaultValues: project
       ? {
           ...project,
-          status: project.status as ProjectStatus,
+          status: project.status, // Ya es del tipo ProjectStatus correcto
           statusDescription: project.statusDescription || '',
         }
       : {
@@ -84,7 +79,7 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
           academicTutor: '',
           communityTutor: '',
           contactInformation: '',
-          status: 'Planning',
+          status: 'Planning', // Valor por defecto para nuevos proyectos
           statusDescription: '',
           description: '',
           projectType: '',
@@ -95,6 +90,16 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
 
   const currentDescription = watch('description');
   const currentStatus = watch('status');
+
+  // Asegura que el estado sea 'Planning' y no editable al crear.
+  useEffect(() => {
+    if (!isEditMode && !project) {
+      // El defaultValues ya establece 'Planning'.
+      // Si quisiéramos forzarlo explícitamente o si el Select estuviera completamente separado:
+      // setValue('status', 'Planning', { shouldValidate: false }); // No es necesario si defaultValues funciona
+    }
+  }, [isEditMode, project, setValue]);
+
 
   useEffect(() => {
     if (state?.message) {
@@ -171,14 +176,23 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
               <Controller
                 name="status"
                 control={control}
+                defaultValue={isEditMode ? project?.status : 'Planning'} // Asegura el valor correcto
                 render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger id="status" aria-invalid={errors.status ? "true" : "false"}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={!isEditMode} // Deshabilitado si no está en modo edición
+                  >
+                    <SelectTrigger
+                      id="status"
+                      aria-invalid={errors.status ? "true" : "false"}
+                      className={!isEditMode ? "bg-muted/50 cursor-not-allowed" : ""}
+                    >
                       <SelectValue placeholder="Seleccionar estado" />
                     </SelectTrigger>
                     <SelectContent>
                       {PROJECT_STATUS_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
+                        <SelectItem key={option.value} value={option.value} disabled={!isEditMode && option.value !== 'Planning'}>
                           {option.label}
                         </SelectItem>
                       ))}
@@ -191,6 +205,8 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
             </div>
           </div>
 
+          {/* El campo statusDescription se muestra si el estado actual no es 'Completado' */}
+          {/* En modo creación, currentStatus será 'Planning' por defecto, así que se mostrará. */}
           {currentStatus !== 'Completed' && (
             <div>
               <Label htmlFor="statusDescription">Notas Adicionales sobre el Estado (Opcional)</Label>
@@ -261,5 +277,3 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
     </form>
   );
 }
-
-    
