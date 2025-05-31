@@ -1,3 +1,4 @@
+
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -26,7 +27,8 @@ import {
   UserSquare, // Icono alternativo para Líder de proyecto
   MessageSquareText, // Para la descripción del estado
 } from 'lucide-react';
-import Image from 'next/image';
+// Image component is no longer needed
+// import Image from 'next/image';
 
 export const dynamic = 'force-dynamic'; 
 
@@ -160,21 +162,7 @@ async function ProjectDetailsPage({ params }: { params: { id: string } }) {
               ))}
             </CardContent>
           </Card>
-          <Card className="shadow-lg" data-ai-hint="colaboración comunitaria">
-             <CardHeader>
-                <CardTitle>Imagen del Proyecto</CardTitle>
-             </CardHeader>
-             <CardContent>
-                <Image 
-                    src="https://placehold.co/600x400.png" 
-                    alt={project.projectName} 
-                    width={600} 
-                    height={400}
-                    className="rounded-md object-cover aspect-video"
-                    data-ai-hint="proyecto comunitario"
-                />
-             </CardContent>
-          </Card>
+          {/* Card for Project Image has been removed */}
         </div>
       </div>
     </div>
@@ -182,3 +170,4 @@ async function ProjectDetailsPage({ params }: { params: { id: string } }) {
 }
 
 export default ProjectDetailsPage;
+
