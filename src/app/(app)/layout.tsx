@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -39,10 +40,18 @@ const navItems = [
   { href: '/dashboard', label: 'Panel de Control', icon: LayoutDashboard },
   { href: '/projects', label: 'Proyectos', icon: Briefcase },
   { href: '/projects/new', label: 'Nuevo Proyecto', icon: PlusCircle },
+  { href: '/settings', label: 'Configuración', icon: Settings },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+
+  // Esta es una simulación. En una app real, tendrías un estado de autenticación.
+  const handleLogout = () => {
+    // Lógica de logout aquí (limpiar tokens, etc.)
+    // Redirigir a la página de login:
+    window.location.href = '/login';
+  };
 
   return (
     <SidebarProvider defaultOpen>
@@ -87,16 +96,20 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <DropdownMenuContent side="right" align="start" className="w-56">
               <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <UserCircle className="mr-2 h-4 w-4" />
-                <span>Perfil</span>
+              <DropdownMenuItem asChild>
+                <Link href="#"> {/* Idealmente a una página de perfil /profile */}
+                  <UserCircle className="mr-2 h-4 w-4" />
+                  <span>Perfil</span>
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Configuración</span>
+              <DropdownMenuItem asChild>
+                <Link href="/settings">
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Configuración</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Cerrar Sesión</span>
               </DropdownMenuItem>
