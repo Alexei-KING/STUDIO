@@ -1,11 +1,11 @@
 
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useActionState } from 'react'; // Changed import
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useFormState } from 'react-dom';
+// import { useFormState } from 'react-dom'; // Removed old import
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,7 +58,7 @@ interface ProjectFormProps {
 export function ProjectForm({ project, formAction, isEditMode = false }: ProjectFormProps) {
   const { toast } = useToast();
   const router = useRouter();
-  const [state, dispatch] = useFormState(formAction, undefined);
+  const [state, dispatch] = useActionState(formAction, undefined); // Changed to useActionState
 
   const {
     register,
@@ -261,3 +261,5 @@ export function ProjectForm({ project, formAction, isEditMode = false }: Project
     </form>
   );
 }
+
+    
